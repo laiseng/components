@@ -26,6 +26,7 @@ import {MatFormFieldControl, MatFormField, MAT_FORM_FIELD} from '@angular/materi
 import {ThemePalette, DateAdapter} from '@angular/material/core';
 import {NgControl, ControlContainer} from '@angular/forms';
 import {Subject, merge, Subscription} from 'rxjs';
+import {FocusOrigin} from '@angular/cdk/a11y';
 import {coerceBooleanProperty, BooleanInput} from '@angular/cdk/coercion';
 import {
   MatStartDate,
@@ -243,6 +244,12 @@ export class MatDateRangeInput<D> implements MatFormFieldControl<DateRange<D>>,
       throw createMissingDateImplError('DateAdapter');
     }
 
+    // The datepicker module can be used both with MDC and non-MDC form fields. We have
+    // to conditionally add the MDC input class so that the range picker looks correctly.
+    if (_formField?._elementRef.nativeElement.classList.contains('mat-mdc-form-field')) {
+      _elementRef.nativeElement.classList.add('mat-mdc-input-element');
+    }
+
     // TODO(crisbeto): remove `as any` after #18206 lands.
     this.ngControl = control as any;
   }
@@ -317,6 +324,11 @@ export class MatDateRangeInput<D> implements MatFormFieldControl<DateRange<D>>,
     return this._formField ? this._formField.getConnectedOverlayOrigin() : this._elementRef;
   }
 
+  /** Gets the ID of an element that should be used a description for the calendar overlay. */
+  getOverlayLabelId(): string | null {
+    return this._formField ? this._formField.getLabelId() : null;
+  }
+
   /** Gets the value that is used to mirror the state input. */
   _getInputMirrorValue() {
     return this._startInput ? this._startInput.getMirrorValue() : '';
@@ -342,13 +354,20 @@ export class MatDateRangeInput<D> implements MatFormFieldControl<DateRange<D>>,
 
   /** Whether the separate text should be hidden. */
   _shouldHideSeparator() {
-    return (!this._formField || this._formField._hideControlPlaceholder()) && this.empty;
+    return (!this._formField || (this._formField.getLabelId() &&
+      !this._formField._shouldLabelFloat())) && this.empty;
   }
 
   /** Gets the value for the `aria-labelledby` attribute of the inputs. */
   _getAriaLabelledby() {
     const formField = this._formField;
     return formField && formField._hasFloatingLabel() ? formField._labelId : null;
+  }
+
+  /** Updates the focused state of the range input. */
+  _updateFocus(origin: FocusOrigin) {
+    this.focused = origin !== null;
+    this.stateChanges.next();
   }
 
   /** Re-runs the validators on the start/end inputs. */

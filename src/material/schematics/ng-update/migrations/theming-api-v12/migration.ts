@@ -6,95 +6,21 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-/** Mapping of Material mixins that should be renamed. */
-const materialMixins: Record<string, string> = {
-  'mat-core': 'core',
-  'mat-core-color': 'core-color',
-  'mat-core-theme': 'core-theme',
-  'angular-material-theme': 'all-component-themes',
-  'angular-material-typography': 'all-component-typographies',
-  'angular-material-color': 'all-component-colors',
-  'mat-base-typography': 'typography-hierarchy',
-  'mat-typography-level-to-styles': 'typography-level',
-  'mat-elevation': 'elevation',
-  'mat-overridable-elevation': 'overridable-elevation',
-  'mat-elevation-transition': 'elevation-transition',
-  'mat-ripple': 'ripple',
-  'mat-ripple-color': 'ripple-color',
-  'mat-ripple-theme': 'ripple-theme',
-  'mat-strong-focus-indicators': 'strong-focus-indicators',
-  'mat-strong-focus-indicators-color': 'strong-focus-indicators-color',
-  'mat-strong-focus-indicators-theme': 'strong-focus-indicators-theme',
-  'mat-font-shorthand': 'font-shorthand',
-  // The expansion panel is a special case, because the package is called `expansion`, but the
-  // mixins were prefixed with `expansion-panel`. This was corrected by the Sass module migration.
-  'mat-expansion-panel-theme': 'expansion-theme',
-  'mat-expansion-panel-color': 'expansion-color',
-  'mat-expansion-panel-typography': 'expansion-typography',
-};
+import {
+  materialMixins,
+  materialFunctions,
+  materialVariables,
+  cdkMixins,
+  cdkVariables,
+  removedMaterialVariables,
+  unprefixedRemovedVariables
+} from './config';
 
-// The component themes all follow the same pattern so we can spare ourselves some typing.
-[
-  'option', 'optgroup', 'pseudo-checkbox', 'autocomplete', 'badge', 'bottom-sheet', 'button',
-  'button-toggle', 'card', 'checkbox', 'chips', 'divider', 'table', 'datepicker', 'dialog',
-  'grid-list', 'icon', 'input', 'list', 'menu', 'paginator', 'progress-bar', 'progress-spinner',
-  'radio', 'select', 'sidenav', 'slide-toggle', 'slider', 'stepper', 'sort', 'tabs', 'toolbar',
-  'tooltip', 'snack-bar', 'form-field', 'tree'
-].forEach(name => {
-  materialMixins[`mat-${name}-theme`] = `${name}-theme`;
-  materialMixins[`mat-${name}-color`] = `${name}-color`;
-  materialMixins[`mat-${name}-typography`] = `${name}-typography`;
-});
-
-/** Mapping of Material functions that should be renamed. */
-const materialFunctions: Record<string, string> = {
-  'mat-color': 'get-color-from-palette',
-  'mat-contrast': 'get-contrast-color-from-palette',
-  'mat-palette': 'define-palette',
-  'mat-dark-theme': 'define-dark-theme',
-  'mat-light-theme': 'define-light-theme',
-  'mat-typography-level': 'define-typography-level',
-  'mat-typography-config': 'define-typography-config',
-  'mat-font-size': 'font-size',
-  'mat-line-height': 'line-height',
-  'mat-font-weight': 'font-weight',
-  'mat-letter-spacing': 'letter-spacing',
-  'mat-font-family': 'font-family',
-};
-
-/** Mapping of Material variables that should be renamed. */
-const materialVariables: Record<string, string> = {
-  'mat-light-theme-background': 'light-theme-background-palette',
-  'mat-dark-theme-background': 'dark-theme-background-palette',
-  'mat-light-theme-foreground': 'light-theme-foreground-palette',
-  'mat-dark-theme-foreground': 'dark-theme-foreground-palette',
-};
-
-// The palettes all follow the same pattern.
-[
-  'red', 'pink', 'indigo', 'purple', 'deep-purple', 'blue', 'light-blue', 'cyan', 'teal', 'green',
-  'light-green', 'lime', 'yellow', 'amber', 'orange', 'deep-orange', 'brown', 'grey', 'gray',
-  'blue-grey', 'blue-gray'
-].forEach(name => materialVariables[`mat-${name}`] = `${name}-palette`);
-
-/** Mapping of CDK variables that should be renamed. */
-const cdkVariables: Record<string, string> = {
-  'cdk-z-index-overlay-container': 'overlay-container-z-index',
-  'cdk-z-index-overlay': 'overlay-z-index',
-  'cdk-z-index-overlay-backdrop': 'overlay-backdrop-z-index',
-  'cdk-overlay-dark-backdrop-background': 'overlay-backdrop-color',
-};
-
-/** Mapping of CDK mixins that should be renamed. */
-const cdkMixins: Record<string, string> = {
-  'cdk-overlay': 'overlay',
-  'cdk-a11y': 'a11y-visually-hidden',
-  'cdk-high-contrast': 'high-contrast',
-  'cdk-text-field-autofill-color': 'text-field-autofill-color',
-  // This one was split up into two mixins which is trickier to
-  // migrate so for now we forward to the deprecated variant.
-  'cdk-text-field': 'text-field',
-};
+/** The result of a search for imports and namespaces in a file. */
+interface DetectImportResult {
+  imports: string[];
+  namespaces: string[];
+}
 
 /**
  * Migrates the content of a file to the new theming API. Note that this migration is using plain
@@ -118,18 +44,22 @@ export function migrateFileContent(content: string,
   const materialResults = detectImports(content, oldMaterialPrefix);
   const cdkResults = detectImports(content, oldCdkPrefix);
 
-  // If there are no imports, we don't need to go further.
-  if (materialResults.imports.length > 0 || cdkResults.imports.length > 0) {
-    const initialContent = content;
-    content = migrateMaterialSymbols(content, newMaterialImportPath, materialResults.namespaces);
-    content = migrateCdkSymbols(content, newCdkImportPath, cdkResults.namespaces);
+  // Try to migrate the symbols even if there are no imports. This is used
+  // to cover the case where the Components symbols were used transitively.
+  content = migrateMaterialSymbols(content, newMaterialImportPath, materialResults);
+  content = migrateCdkSymbols(content, newCdkImportPath, cdkResults);
+  content = replaceRemovedVariables(content, removedMaterialVariables);
 
-    // Only drop the imports if any of the symbols were used within the file.
-    if (content !== initialContent) {
-      content = removeStrings(content, materialResults.imports);
-      content = removeStrings(content, cdkResults.imports);
-      content = content.replace(/^\s+/, '');
-    }
+  // We can assume that the migration has taken care of any Components symbols that were
+  // imported transitively so we can always drop the old imports. We also assume that imports
+  // to the new entry points have been added already.
+  if (materialResults.imports.length) {
+    content = replaceRemovedVariables(content, unprefixedRemovedVariables);
+    content = removeStrings(content, materialResults.imports);
+  }
+
+  if (cdkResults.imports.length) {
+    content = removeStrings(content, cdkResults.imports);
   }
 
   return content;
@@ -140,7 +70,7 @@ export function migrateFileContent(content: string,
  * @param content File content in which to look for imports.
  * @param prefix Prefix that the imports should start with.
  */
-function detectImports(content: string, prefix: string): {imports: string[], namespaces: string[]} {
+function detectImports(content: string, prefix: string): DetectImportResult {
   if (prefix[prefix.length - 1] !== '/') {
     // Some of the logic further down makes assumptions about the import depth.
     throw Error(`Prefix "${prefix}" has to end in a slash.`);
@@ -172,47 +102,49 @@ function detectImports(content: string, prefix: string): {imports: string[], nam
 }
 
 /** Migrates the Material symbls in a file. */
-function migrateMaterialSymbols(content: string, importPath: string, namespaces: string[]): string {
+function migrateMaterialSymbols(content: string, importPath: string,
+                                detectedImports: DetectImportResult): string {
   const initialContent = content;
   const namespace = 'mat';
 
   // Migrate the mixins.
-  content = renameSymbols(content, materialMixins, namespaces, mixinKeyFormatter,
+  content = renameSymbols(content, materialMixins, detectedImports.namespaces, mixinKeyFormatter,
     getMixinValueFormatter(namespace));
 
   // Migrate the functions.
-  content = renameSymbols(content, materialFunctions, namespaces, functionKeyFormatter,
-    getFunctionValueFormatter(namespace));
+  content = renameSymbols(content, materialFunctions, detectedImports.namespaces,
+    functionKeyFormatter, getFunctionValueFormatter(namespace));
 
   // Migrate the variables.
-  content = renameSymbols(content, materialVariables, namespaces, variableKeyFormatter,
-    getVariableValueFormatter(namespace));
+  content = renameSymbols(content, materialVariables, detectedImports.namespaces,
+    variableKeyFormatter, getVariableValueFormatter(namespace));
 
   if (content !== initialContent) {
     // Add an import to the new API only if any of the APIs were being used.
-    content = insertUseStatement(content, importPath, namespace);
+    content = insertUseStatement(content, importPath, detectedImports.imports, namespace);
   }
 
   return content;
 }
 
 /** Migrates the CDK symbols in a file. */
-function migrateCdkSymbols(content: string, importPath: string, namespaces: string[]): string {
+function migrateCdkSymbols(content: string, importPath: string,
+                           detectedImports: DetectImportResult): string {
   const initialContent = content;
   const namespace = 'cdk';
 
   // Migrate the mixins.
-  content = renameSymbols(content, cdkMixins, namespaces, mixinKeyFormatter,
+  content = renameSymbols(content, cdkMixins, detectedImports.namespaces, mixinKeyFormatter,
     getMixinValueFormatter(namespace));
 
   // Migrate the variables.
-  content = renameSymbols(content, cdkVariables, namespaces, variableKeyFormatter,
+  content = renameSymbols(content, cdkVariables, detectedImports.namespaces, variableKeyFormatter,
     getVariableValueFormatter(namespace));
 
   // Previously the CDK symbols were exposed through `material/theming`, but now we have a
   // dedicated entrypoint for the CDK. Only add an import for it if any of the symbols are used.
   if (content !== initialContent) {
-    content = insertUseStatement(content, importPath, namespace);
+    content = insertUseStatement(content, importPath, detectedImports.imports, namespace);
   }
 
   return content;
@@ -251,11 +183,21 @@ function renameSymbols(content: string,
 }
 
 /** Inserts an `@use` statement in a string. */
-function insertUseStatement(content: string, importPath: string, namespace: string): string {
+function insertUseStatement(content: string, importPath: string, importsToIgnore: string[],
+                            namespace: string): string {
+  // We want to find the first import that isn't in the list of ignored imports or find nothing,
+  // because the imports being replaced might be the only ones in the file and they can be further
+  // down. An easy way to do this is to replace the imports with a random character and run
+  // `indexOf` on the result. This isn't the most efficient way of doing it, but it's more compact
+  // and it allows us to easily deal with things like comment nodes.
+  const contentToSearch = importsToIgnore.reduce((accumulator, current) =>
+    accumulator.replace(current, '◬'.repeat(current.length)), content);
+
   // Sass has a limitation that all `@use` declarations have to come before `@import` so we have
   // to find the first import and insert before it. Technically we can get away with always
   // inserting at 0, but the file may start with something like a license header.
-  const newImportIndex = Math.max(0, content.indexOf('@import '));
+  const newImportIndex = Math.max(0, contentToSearch.indexOf('@import '));
+
   return content.slice(0, newImportIndex) + `@use '${importPath}' as ${namespace};\n` +
          content.slice(newImportIndex);
 }
@@ -307,7 +249,9 @@ function sortLengthDescending(a: string, b: string) {
 
 /** Removes all strings from another string. */
 function removeStrings(content: string, toRemove: string[]): string {
-  return toRemove.reduce((accumulator, current) => accumulator.replace(current, ''), content);
+  return toRemove
+    .reduce((accumulator, current) => accumulator.replace(current, ''), content)
+    .replace(/^\s+/, '');
 }
 
 /** Parses out the namespace from a Sass `@use` statement. */
@@ -345,4 +289,20 @@ function extractNamespaceFromUseStatement(fullImport: string): string {
   }
 
   throw Error(`Could not extract namespace from import "${fullImport}".`);
+}
+
+/**
+ * Replaces variables that have been removed with their values.
+ * @param content Content of the file to be migrated.
+ * @param variables Mapping between variable names and their values.
+ */
+function replaceRemovedVariables(content: string, variables: Record<string, string>): string {
+  Object.keys(variables).sort(sortLengthDescending).forEach(variableName => {
+    // Note that the pattern uses a negative lookahead to exclude
+    // variable assignments, because they can't be migrated.
+    const regex = new RegExp(`\\$${escapeRegExp(variableName)}(?!\\s+:|:)`, 'g');
+    content = content.replace(regex, variables[variableName]);
+  });
+
+  return content;
 }

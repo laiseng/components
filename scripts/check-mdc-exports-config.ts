@@ -1,6 +1,6 @@
 export const config = {
   // The MDC sidenav hasn't been implemented yet.
-  skippedPackages: ['mdc-sidenav'],
+  skippedPackages: ['mdc-sidenav', 'mdc-slider'],
   skippedExports: {
     'mdc-chips': [
       // These components haven't been implemented for MDC due to a different accessibility pattern.
@@ -96,6 +96,11 @@ export const config = {
       // Private symbols that are only exported for MDC.
       '_MatTableDataSource',
       '_MAT_TEXT_COLUMN_TEMPLATE'
+    ],
+    'mdc-table/testing': [
+      // Private symbols that are only exported for MDC.
+      '_MatTableHarnessBase',
+      '_MatRowHarnessBase'
     ],
     'mdc-tooltip': [
       // Private symbols that are only exported for MDC.

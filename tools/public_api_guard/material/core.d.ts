@@ -62,19 +62,19 @@ export interface CanColor {
     defaultColor: ThemePalette | undefined;
 }
 
-export declare type CanColorCtor = Constructor<CanColor>;
+export declare type CanColorCtor = Constructor<CanColor> & AbstractConstructor<CanColor>;
 
 export interface CanDisable {
     disabled: boolean;
 }
 
-export declare type CanDisableCtor = Constructor<CanDisable>;
+export declare type CanDisableCtor = Constructor<CanDisable> & AbstractConstructor<CanDisable>;
 
 export interface CanDisableRipple {
     disableRipple: boolean;
 }
 
-export declare type CanDisableRippleCtor = Constructor<CanDisableRipple>;
+export declare type CanDisableRippleCtor = Constructor<CanDisableRipple> & AbstractConstructor<CanDisableRipple>;
 
 export interface CanUpdateErrorState {
     errorState: boolean;
@@ -83,7 +83,7 @@ export interface CanUpdateErrorState {
     updateErrorState(): void;
 }
 
-export declare type CanUpdateErrorStateCtor = Constructor<CanUpdateErrorState>;
+export declare type CanUpdateErrorStateCtor = Constructor<CanUpdateErrorState> & AbstractConstructor<CanUpdateErrorState>;
 
 export declare abstract class DateAdapter<D> {
     protected readonly _localeChanges: Subject<void>;
@@ -127,7 +127,7 @@ export declare const defaultRippleAnimationConfig: {
 export declare class ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean;
     static ɵfac: i0.ɵɵFactoryDeclaration<ErrorStateMatcher, never>;
-    static ɵprov: i0.ɵɵInjectableDef<ErrorStateMatcher>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<ErrorStateMatcher>;
 }
 
 export interface GranularSanityChecks {
@@ -148,7 +148,7 @@ export interface HasTabIndex {
     tabIndex: number;
 }
 
-export declare type HasTabIndexCtor = Constructor<HasTabIndex>;
+export declare type HasTabIndexCtor = Constructor<HasTabIndex> & AbstractConstructor<HasTabIndex>;
 
 export declare const MAT_DATE_FORMATS: InjectionToken<MatDateFormats>;
 
@@ -266,6 +266,7 @@ export declare class MatRipple implements OnInit, OnDestroy, RippleTarget {
     unbounded: boolean;
     constructor(_elementRef: ElementRef<HTMLElement>, ngZone: NgZone, platform: Platform, globalOptions?: RippleGlobalOptions, _animationMode?: string | undefined);
     fadeOutAll(): void;
+    fadeOutAllNonPersistent(): void;
     launch(config: RippleConfig): RippleRef;
     launch(x: number, y: number, config?: RippleConfig): RippleRef;
     ngOnDestroy(): void;
@@ -280,13 +281,13 @@ export declare class MatRippleModule {
     static ɵmod: i0.ɵɵNgModuleDeclaration<MatRippleModule, [typeof i1.MatRipple], [typeof i2.MatCommonModule, typeof i3.PlatformModule], [typeof i1.MatRipple, typeof i2.MatCommonModule]>;
 }
 
-export declare function mixinColor<T extends Constructor<HasElementRef>>(base: T, defaultColor?: ThemePalette): CanColorCtor & T;
+export declare function mixinColor<T extends AbstractConstructor<HasElementRef>>(base: T, defaultColor?: ThemePalette): CanColorCtor & T;
 
-export declare function mixinDisabled<T extends Constructor<{}>>(base: T): CanDisableCtor & T;
+export declare function mixinDisabled<T extends AbstractConstructor<{}>>(base: T): CanDisableCtor & T;
 
 export declare function mixinDisableRipple<T extends AbstractConstructor<{}>>(base: T): CanDisableRippleCtor & T;
 
-export declare function mixinErrorState<T extends Constructor<HasErrorState>>(base: T): CanUpdateErrorStateCtor & T;
+export declare function mixinErrorState<T extends AbstractConstructor<HasErrorState>>(base: T): CanUpdateErrorStateCtor & T;
 
 export declare function mixinInitialized<T extends Constructor<{}>>(base: T): HasInitializedCtor & T;
 
@@ -319,7 +320,7 @@ export declare class NativeDateAdapter extends DateAdapter<Date> {
     toIso8601(date: Date): string;
     today(): Date;
     static ɵfac: i0.ɵɵFactoryDeclaration<NativeDateAdapter, [{ optional: true; }, null]>;
-    static ɵprov: i0.ɵɵInjectableDef<NativeDateAdapter>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<NativeDateAdapter>;
 }
 
 export declare class NativeDateModule {
@@ -365,6 +366,7 @@ export declare class RippleRenderer implements EventListenerObject {
     _removeTriggerEvents(): void;
     fadeInRipple(x: number, y: number, config?: RippleConfig): RippleRef;
     fadeOutAll(): void;
+    fadeOutAllNonPersistent(): void;
     fadeOutRipple(rippleRef: RippleRef): void;
     handleEvent(event: Event): void;
     setupTriggerEvents(elementOrElementRef: HTMLElement | ElementRef<HTMLElement>): void;
@@ -389,7 +391,7 @@ export declare function setLines(lines: QueryList<unknown>, element: ElementRef<
 export declare class ShowOnDirtyErrorStateMatcher implements ErrorStateMatcher {
     isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean;
     static ɵfac: i0.ɵɵFactoryDeclaration<ShowOnDirtyErrorStateMatcher, never>;
-    static ɵprov: i0.ɵɵInjectableDef<ShowOnDirtyErrorStateMatcher>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<ShowOnDirtyErrorStateMatcher>;
 }
 
 export declare type ThemePalette = 'primary' | 'accent' | 'warn' | undefined;

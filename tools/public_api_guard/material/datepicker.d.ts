@@ -13,6 +13,7 @@ export declare class DateRange<D> {
 }
 
 export interface DateSelectionModelChange<S> {
+    oldValue?: S;
     selection: S;
     source: unknown;
 }
@@ -22,7 +23,7 @@ export declare class DefaultMatCalendarRangeStrategy<D> implements MatDateRangeS
     createPreview(activeDate: D | null, currentRange: DateRange<D>): DateRange<D>;
     selectionFinished(date: D, currentRange: DateRange<D>): DateRange<D>;
     static ɵfac: i0.ɵɵFactoryDeclaration<DefaultMatCalendarRangeStrategy<any>, never>;
-    static ɵprov: i0.ɵɵInjectableDef<DefaultMatCalendarRangeStrategy<any>>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<DefaultMatCalendarRangeStrategy<any>>;
 }
 
 export declare type ExtractDateTypeFromSelection<T> = T extends DateRange<infer D> ? D : NonNullable<T>;
@@ -245,7 +246,7 @@ export declare class MatDatepickerInput<D> extends MatDatepickerInputBase<D | nu
     set max(value: D | null);
     get min(): D | null;
     set min(value: D | null);
-    constructor(elementRef: ElementRef<HTMLInputElement>, dateAdapter: DateAdapter<D>, dateFormats: MatDateFormats, _formField: MatFormField);
+    constructor(elementRef: ElementRef<HTMLInputElement>, dateAdapter: DateAdapter<D>, dateFormats: MatDateFormats, _formField?: MatFormField | undefined);
     protected _assignValueToModel(value: D | null): void;
     protected _getDateFilter(): DateFilterFn<D | null>;
     _getMaxDate(): D | null;
@@ -254,6 +255,7 @@ export declare class MatDatepickerInput<D> extends MatDatepickerInputBase<D | nu
     protected _openPopup(): void;
     protected _shouldHandleChangeEvent(event: DateSelectionModelChange<D>): boolean;
     getConnectedOverlayOrigin(): ElementRef;
+    getOverlayLabelId(): string | null;
     getStartValue(): D | null;
     getThemePalette(): ThemePalette;
     ngOnDestroy(): void;
@@ -286,7 +288,7 @@ export declare class MatDatepickerIntl {
     switchToMultiYearViewLabel: string;
     formatYearRange(start: string, end: string): string;
     static ɵfac: i0.ɵɵFactoryDeclaration<MatDatepickerIntl, never>;
-    static ɵprov: i0.ɵɵInjectableDef<MatDatepickerIntl>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<MatDatepickerIntl>;
 }
 
 export declare class MatDatepickerModule {
@@ -356,8 +358,10 @@ export declare class MatDateRangeInput<D> implements MatFormFieldControl<DateRan
     _handleChildValueChange(): void;
     _openDatepicker(): void;
     _shouldHidePlaceholders(): boolean;
-    _shouldHideSeparator(): boolean;
+    _shouldHideSeparator(): boolean | "" | null;
+    _updateFocus(origin: FocusOrigin): void;
     getConnectedOverlayOrigin(): ElementRef;
+    getOverlayLabelId(): string | null;
     getStartValue(): D | null;
     getThemePalette(): ThemePalette;
     ngAfterContentInit(): void;
@@ -396,7 +400,7 @@ export declare abstract class MatDateSelectionModel<S, D = ExtractDateTypeFromSe
     ngOnDestroy(): void;
     updateSelection(value: S, source: unknown): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<MatDateSelectionModel<any, any>, never>;
-    static ɵprov: i0.ɵɵInjectableDef<MatDateSelectionModel<any, any>>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<MatDateSelectionModel<any, any>>;
 }
 
 export declare class MatEndDate<D> extends _MatDateRangeInputBase<D> implements CanUpdateErrorState, DoCheck, OnInit {
@@ -405,6 +409,7 @@ export declare class MatEndDate<D> extends _MatDateRangeInputBase<D> implements 
     protected _assignValueToModel(value: D | null): void;
     protected _getValueFromModel(modelValue: DateRange<D>): D | null;
     _onKeydown(event: KeyboardEvent): void;
+    protected _shouldHandleChangeEvent(change: DateSelectionModelChange<DateRange<D>>): boolean;
     ngDoCheck(): void;
     ngOnInit(): void;
     static ngAcceptInputType_disabled: BooleanInput;
@@ -497,7 +502,7 @@ export declare class MatRangeDateSelectionModel<D> extends MatDateSelectionModel
     isComplete(): boolean;
     isValid(): boolean;
     static ɵfac: i0.ɵɵFactoryDeclaration<MatRangeDateSelectionModel<any>, never>;
-    static ɵprov: i0.ɵɵInjectableDef<MatRangeDateSelectionModel<any>>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<MatRangeDateSelectionModel<any>>;
 }
 
 export declare class MatSingleDateSelectionModel<D> extends MatDateSelectionModel<D | null, D> {
@@ -507,7 +512,7 @@ export declare class MatSingleDateSelectionModel<D> extends MatDateSelectionMode
     isComplete(): boolean;
     isValid(): boolean;
     static ɵfac: i0.ɵɵFactoryDeclaration<MatSingleDateSelectionModel<any>, never>;
-    static ɵprov: i0.ɵɵInjectableDef<MatSingleDateSelectionModel<any>>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<MatSingleDateSelectionModel<any>>;
 }
 
 export declare class MatStartDate<D> extends _MatDateRangeInputBase<D> implements CanUpdateErrorState, DoCheck, OnInit {
@@ -516,6 +521,7 @@ export declare class MatStartDate<D> extends _MatDateRangeInputBase<D> implement
     protected _assignValueToModel(value: D | null): void;
     protected _formatValue(value: D | null): void;
     protected _getValueFromModel(modelValue: DateRange<D>): D | null;
+    protected _shouldHandleChangeEvent(change: DateSelectionModelChange<DateRange<D>>): boolean;
     getMirrorValue(): string;
     ngDoCheck(): void;
     ngOnInit(): void;

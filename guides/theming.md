@@ -147,7 +147,7 @@ $my-primary: mat.define-palette(mat.$indigo-palette, 500);
 $my-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
 
 // The "warn" palette is optional and defaults to red if not specified.
-$my-accent: mat.define-palette(mat.$red-palette);
+$my-warn: mat.define-palette(mat.$red-palette);
 
 $my-theme: mat.define-light-theme((
  color: (
@@ -318,7 +318,7 @@ file. The approach for this loading depends on your application.
 ### Scoping style customizations
 
 You can use Angular Material's Sass mixins to customize component styles within a specific scope
-in your application. The CSS rule declaration which you include a Sass mixin determines its scope.
+in your application. The CSS rule declaration in which you include a Sass mixin determines its scope.
 The example below shows how to customize the color of all buttons inside elements marked with the
 `.my-special-section` CSS class.
 

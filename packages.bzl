@@ -2,7 +2,7 @@
 # all in-sync. This map is passed to each ng_package rule to stamp out the appropriate
 # version for the placeholders.
 ANGULAR_PACKAGE_VERSION = "^12.0.0-0 || ^13.0.0-0"
-MDC_PACKAGE_VERSION = "^11.0.0-canary.15604bd0d.0"
+MDC_PACKAGE_VERSION = "^12.0.0-canary.af453daf8.0"
 TSLIB_PACKAGE_VERSION = "^2.1.0"
 RXJS_PACKAGE_VERSION = "^6.5.3"
 
@@ -33,7 +33,6 @@ ANGULAR_NGCC_BUNDLES = [
     ("@angular/common", ["common-http-testing.umd.js", "common-http.umd.js", "common-testing.umd.js", "common.umd.js"]),
     ("@angular/compiler", ["compiler-testing.umd.js"]),
     ("@angular/core", ["core-testing.umd.js", "core.umd.js"]),
-    ("@angular/elements", ["elements.umd.js"]),
     ("@angular/forms", ["forms.umd.js"]),
     ("@angular/platform-browser-dynamic", ["platform-browser-dynamic-testing.umd.js", "platform-browser-dynamic.umd.js"]),
     ("@angular/platform-browser", ["platform-browser.umd.js", "platform-browser-testing.umd.js", "platform-browser-animations.umd.js"]),

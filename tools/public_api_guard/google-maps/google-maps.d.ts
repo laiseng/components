@@ -140,14 +140,14 @@ export declare class MapDirectionsService {
     constructor(_ngZone: NgZone);
     route(request: google.maps.DirectionsRequest): Observable<MapDirectionsResponse>;
     static ɵfac: i0.ɵɵFactoryDeclaration<MapDirectionsService, never>;
-    static ɵprov: i0.ɵɵInjectableDef<MapDirectionsService>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<MapDirectionsService>;
 }
 
 export declare class MapGeocoder {
     constructor(_ngZone: NgZone);
     geocode(request: google.maps.GeocoderRequest): Observable<MapGeocoderResponse>;
     static ɵfac: i0.ɵɵFactoryDeclaration<MapGeocoder, never>;
-    static ɵprov: i0.ɵɵInjectableDef<MapGeocoder>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<MapGeocoder>;
 }
 
 export interface MapGeocoderResponse {
@@ -254,6 +254,7 @@ export declare class MapMarker implements OnInit, OnChanges, OnDestroy, MapAncho
     readonly shapeChanged: Observable<void>;
     set title(title: string);
     readonly titleChanged: Observable<void>;
+    set visible(value: boolean);
     readonly visibleChanged: Observable<void>;
     readonly zindexChanged: Observable<void>;
     constructor(_googleMap: GoogleMap, _ngZone: NgZone);
@@ -273,7 +274,7 @@ export declare class MapMarker implements OnInit, OnChanges, OnDestroy, MapAncho
     ngOnChanges(changes: SimpleChanges): void;
     ngOnDestroy(): void;
     ngOnInit(): void;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<MapMarker, "map-marker", ["mapMarker"], { "title": "title"; "position": "position"; "label": "label"; "clickable": "clickable"; "options": "options"; "icon": "icon"; }, { "animationChanged": "animationChanged"; "mapClick": "mapClick"; "clickableChanged": "clickableChanged"; "cursorChanged": "cursorChanged"; "mapDblclick": "mapDblclick"; "mapDrag": "mapDrag"; "mapDragend": "mapDragend"; "draggableChanged": "draggableChanged"; "mapDragstart": "mapDragstart"; "flatChanged": "flatChanged"; "iconChanged": "iconChanged"; "mapMousedown": "mapMousedown"; "mapMouseout": "mapMouseout"; "mapMouseover": "mapMouseover"; "mapMouseup": "mapMouseup"; "positionChanged": "positionChanged"; "mapRightclick": "mapRightclick"; "shapeChanged": "shapeChanged"; "titleChanged": "titleChanged"; "visibleChanged": "visibleChanged"; "zindexChanged": "zindexChanged"; }, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<MapMarker, "map-marker", ["mapMarker"], { "title": "title"; "position": "position"; "label": "label"; "clickable": "clickable"; "options": "options"; "icon": "icon"; "visible": "visible"; }, { "animationChanged": "animationChanged"; "mapClick": "mapClick"; "clickableChanged": "clickableChanged"; "cursorChanged": "cursorChanged"; "mapDblclick": "mapDblclick"; "mapDrag": "mapDrag"; "mapDragend": "mapDragend"; "draggableChanged": "draggableChanged"; "mapDragstart": "mapDragstart"; "flatChanged": "flatChanged"; "iconChanged": "iconChanged"; "mapMousedown": "mapMousedown"; "mapMouseout": "mapMouseout"; "mapMouseover": "mapMouseover"; "mapMouseup": "mapMouseup"; "positionChanged": "positionChanged"; "mapRightclick": "mapRightclick"; "shapeChanged": "shapeChanged"; "titleChanged": "titleChanged"; "visibleChanged": "visibleChanged"; "zindexChanged": "zindexChanged"; }, never>;
     static ɵfac: i0.ɵɵFactoryDeclaration<MapMarker, never>;
 }
 

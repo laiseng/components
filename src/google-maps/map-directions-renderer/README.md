@@ -2,7 +2,7 @@
 
 The `MapDirectionsRenderer` component wraps the [`google.maps.DirectionsRenderer` class](https://developers.google.com/maps/documentation/javascript/reference/directions#DirectionsRenderer) from the Google Maps JavaScript API. This can easily be used with the `MapDirectionsService` that wraps [`google.maps.DirectionsService`](https://developers.google.com/maps/documentation/javascript/reference/directions#DirectionsService) which is designed to be used with Angular by returning an `Observable` response and works inside the Angular Zone.
 
-The `MapDirectionsService`, like the `google.maps.DirectionsService`, has a single method, `route`. Normally, the `google.maps.DirectionsService` takes two arguments, a `google.maps.DirectionsRequest` and a callback that takes the `google.maps.DirectionsResult` and `google.maps.DirectionsStatus` as arguments. The `MapDirectionsService` route method takes takes the `google.maps.DirectionsRequest` as the single argument, and returns an `Observable` of a `MapDirectionsResponse`, which is an interface defined as follows:
+The `MapDirectionsService`, like the `google.maps.DirectionsService`, has a single method, `route`. Normally, the `google.maps.DirectionsService` takes two arguments, a `google.maps.DirectionsRequest` and a callback that takes the `google.maps.DirectionsResult` and `google.maps.DirectionsStatus` as arguments. The `MapDirectionsService` route method takes the `google.maps.DirectionsRequest` as the single argument, and returns an `Observable` of a `MapDirectionsResponse`, which is an interface defined as follows:
 
 ```typescript
 export interface MapDirectionsResponse {
@@ -37,8 +37,8 @@ export class GoogleMapDemo {
   constructor(mapDirectionsService: MapDirectionsService) {
     const request: google.maps.DirectionsRequest = {
       destination: {lat: 12, lng: 4},
-      origin: {lat: 13, lng: 5},
-      travelMode: google.maps.TravelMode.DRIVING,
+      origin: {lat: 14, lng: 8},
+      travelMode: google.maps.TravelMode.DRIVING
     };
     this.directionsResults$ = mapDirectionsService.route(request).pipe(map(response => response.result));
   }

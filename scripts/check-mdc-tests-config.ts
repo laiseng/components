@@ -82,6 +82,10 @@ export const config = {
       'should work in a step'
     ],
     'mdc-list': [
+      // MDC does focus previously focused options, but rather always selects the first selected
+      // option. We have different test in the MDC-based list that captures this behavior.
+      'should focus the previously focused option when the list takes focus a second time',
+
       // TODO: these tests need to be double-checked for missing functionality.
       'should not apply any additional class to a list without lines',
       'should not add the mat-list-single-selected-option class (in multiple mode)',
@@ -112,13 +116,6 @@ export const config = {
       'should deselect all with ctrl + a if all options are selected',
       'should dispatch the selectionChange event when selecting via ctrl + a'
 
-    ],
-    'mdc-menu': [
-      // Disabled since we don't have equivalents to our elevation classes in the MDC packages.
-      'should not remove mat-elevation class from overlay when panelClass is changed',
-      'should increase the sub-menu elevation based on its depth',
-      'should update the elevation when the same menu is opened at a different depth',
-      'should not increase the elevation if the user specified a custom one'
     ],
     'mdc-progress-bar': [
       // These tests are verifying implementation details that are not relevant for MDC.
